@@ -174,7 +174,7 @@ class PostController extends Controller
     /**
      * Update post
      */
-    public function update()
+    public function update($postId = null)
     {
         $this->requireAuth();
 
@@ -183,7 +183,7 @@ class PostController extends Controller
             die('Method not allowed');
         }
 
-        $postId = intval($_POST['post_id'] ?? 0);
+        $postId = intval($postId ?? 0);
         $postModel = new Post();
         $post = $postModel->find($postId);
 
@@ -217,7 +217,7 @@ class PostController extends Controller
     /**
      * Delete post
      */
-    public function delete()
+    public function delete($postId = null)
     {
         $this->requireAuth();
 
@@ -226,7 +226,7 @@ class PostController extends Controller
             die('Method not allowed');
         }
 
-        $postId = intval($_POST['post_id'] ?? 0);
+        $postId = intval($postId ?? 0);
         $postModel = new Post();
         $post = $postModel->find($postId);
 

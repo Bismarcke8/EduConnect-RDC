@@ -126,15 +126,15 @@ class PostController extends Controller
 
         if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
             $_SESSION['error'] = 'Invalid request';
-            $this->redirect('/post/create');
+            $this->redirect('post/create');
         }
 
         $title = Security::sanitize($_POST['title'] ?? '');
         $content = Security::sanitize($_POST['content'] ?? '');
 
         if (empty($content)) {
-            $_SESSION['error'] = 'Post content is required';
-            $this->redirect('/post/create');
+            $_SESSION['error'] = 'Le contenu de la publication ne peut pas être vide';
+            $this->redirect('post/create');
         }
 
         // Handle file upload
@@ -143,7 +143,7 @@ class PostController extends Controller
             $validation = Security::validateFileUpload($_FILES['image']);
             if (!$validation['valid']) {
                 $_SESSION['error'] = $validation['error'];
-                $this->redirect('/post/create');
+                $this->redirect('post/create');
             }
 
             $filename = Security::generateFileName($_FILES['image']['name']);
@@ -167,8 +167,8 @@ class PostController extends Controller
             'is_published' => 1
         ]);
 
-        $_SESSION['success'] = 'Post created successfully';
-        $this->redirect('/post/' . $postId);
+        $_SESSION['success'] = 'Publication créée avec succès';
+        $this->redirect('post/' . $postId);
     }
 
     /**
@@ -194,15 +194,15 @@ class PostController extends Controller
 
         if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
             $_SESSION['error'] = 'Invalid request';
-            $this->redirect('/post/' . $postId);
+            $this->redirect('post/' . $postId);
         }
 
         $title = Security::sanitize($_POST['title'] ?? '');
         $content = Security::sanitize($_POST['content'] ?? '');
 
         if (empty($content)) {
-            $_SESSION['error'] = 'Post content is required';
-            $this->redirect('/post/' . $postId);
+            $_SESSION['error'] = 'Le contenu de la publication ne peut pas être vide';
+            $this->redirect('post/' . $postId);
         }
 
         $postModel->update($postId, [
@@ -210,8 +210,8 @@ class PostController extends Controller
             'content' => $content
         ]);
 
-        $_SESSION['success'] = 'Post updated successfully';
-        $this->redirect('/post/' . $postId);
+        $_SESSION['success'] = 'Publication mise à jour avec succès';
+        $this->redirect('post/' . $postId);
     }
 
     /**
@@ -242,8 +242,8 @@ class PostController extends Controller
         $this->db->delete('comments', ['post_id' => $postId]);
         $this->db->delete('notifications', ['post_id' => $postId]);
 
-        $_SESSION['success'] = 'Post deleted successfully';
-        $this->redirect('/feed');
+        $_SESSION['success'] = 'Publication supprimée avec succès';
+        $this->redirect('feed');
     }
 
     /**

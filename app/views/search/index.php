@@ -7,7 +7,7 @@
         </div>
 
         <div class="card-body">
-            <form method="POST" action="/search">
+            <form method="POST" action="search">
                 <div class="form-group">
                     <label for="query">Nom, Email ou Université</label>
                     <input type="text" id="query" name="query" placeholder="Cherchez un étudiant...">

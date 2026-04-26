@@ -91,7 +91,7 @@
         <aside style="grid-column: 3;">
             <div class="card">
                 <h3 style="margin-bottom: var(--spacing-md);">🔍 Rechercher</h3>
-                <form action="/search" method="POST">
+                <form action="search" method="POST">
                     <input type="text" name="query" placeholder="Chercher un étudiant..." required style="margin-bottom: var(--spacing-md);">
                     <button type="submit" class="btn btn-primary btn-block">Rechercher</button>
                 </form>

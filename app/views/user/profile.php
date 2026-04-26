@@ -24,13 +24,13 @@
                 </div>
 
                 <?php if ($isOwnProfile): ?>
-                    <a href="/user/settings" class="btn btn-primary btn-block" style="margin-top: var(--spacing-lg);">Modifier le profil</a>
+                    <a href="user/settings" class="btn btn-primary btn-block" style="margin-top: var(--spacing-lg);">Modifier le profil</a>
                 <?php elseif ($isFollowing): ?>
-                    <form method="POST" action="/user/<?php echo $user['id']; ?>/unfollow">
+                    <form method="POST" action="user/<?php echo $user['id']; ?>/unfollow">
                         <button type="submit" class="btn btn-secondary btn-block" style="margin-top: var(--spacing-lg);">Following ✓</button>
                     </form>
                 <?php else: ?>
-                    <form method="POST" action="/user/<?php echo $user['id']; ?>/follow">
+                    <form method="POST" action="user/<?php echo $user['id']; ?>/follow">
                         <button type="submit" class="btn btn-primary btn-block" style="margin-top: var(--spacing-lg);">Suivre</button>
                     </form>
                 <?php endif; ?>

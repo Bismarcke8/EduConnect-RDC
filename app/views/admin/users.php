@@ -35,7 +35,7 @@
                             <?php if (!$user['is_active']): ?>
                                 <span style="color: var(--color-text-secondary);">Banni</span>
                             <?php else: ?>
-                                <form method="POST" action="/admin/user/<?php echo $user['id']; ?>/ban" style="display: inline;">
+                                <form method="POST" action="admin/user/<?php echo $user['id']; ?>/ban" style="display: inline;">
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr?')">
                                         Bannir
                                     </button>
@@ -51,14 +51,14 @@
     <!-- Pagination -->
     <div style="display: flex; justify-content: center; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="/admin/users?page=<?php echo $i; ?>" 
+            <a href="admin/users?page=<?php echo $i; ?>" 
                class="btn <?php echo $i === $page ? 'btn-primary' : 'btn-secondary'; ?>">
                 <?php echo $i; ?>
             </a>
         <?php endfor; ?>
     </div>
 
-    <a href="/admin/dashboard" class="btn btn-secondary" style="margin-top: var(--spacing-lg);">← Retour au dashboard</a>
+    <a href="admin/dashboard" class="btn btn-secondary" style="margin-top: var(--spacing-lg);">← Retour au dashboard</a>
 </div>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

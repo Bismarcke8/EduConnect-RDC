@@ -49,12 +49,28 @@
 
         <?php if (isset($_SESSION['user_id'])): ?>
             <div class="card mb-lg">
-                <form method="POST" action="/post/<?php echo $post['id']; ?>/comment" class="card-body">
+                <form method="POST" action="post/<?php echo $post['id']; ?>/comment" class="card-body">
                     <textarea name="content" placeholder="Écrire un commentaire..." required style="margin-bottom: var(--spacing-md);"></textarea>
                     <button type="submit" class="btn btn-primary">Commenter</button>
                 </form>
             </div>
         <?php endif; ?>
+
+        <script>
+        document.querySelector('form[action*="comment"]').addEventListener('submit', function(e) {
+            const content = this.querySelector('textarea[name="content"]').value.trim();
+            if (content.length === 0) {
+                e.preventDefault();
+                alert('Le commentaire ne peut pas être vide.');
+                return false;
+            }
+            if (content.length < 2) {
+                e.preventDefault();
+                alert('Le commentaire doit contenir au moins 2 caractères.');
+                return false;
+            }
+        });
+        </script>
 
         <?php if (empty($post['comments'])): ?>
             <div class="card" style="text-align: center;">

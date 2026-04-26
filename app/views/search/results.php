@@ -8,7 +8,7 @@
             <p style="color: var(--color-text-secondary); padding: var(--spacing-xl) 0;">
                 Aucun étudiant trouvé pour votre recherche
             </p>
-            <a href="/search" class="btn btn-secondary">Nouvelle recherche</a>
+            <a href="search" class="btn btn-secondary">Nouvelle recherche</a>
         </div>
     <?php else: ?>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--spacing-lg);">
@@ -25,7 +25,7 @@
                                 <?php echo htmlspecialchars($user['university']); ?>
                             </p>
                         <?php endif; ?>
-                        <a href="/profile?id=<?php echo $user['id']; ?>" class="btn btn-primary btn-sm btn-block" style="margin-top: var(--spacing-md);">
+                        <a href="profile?id=<?php echo $user['id']; ?>" class="btn btn-primary btn-sm btn-block" style="margin-top: var(--spacing-md);">
                             Voir le profil
                         </a>
                     </div>

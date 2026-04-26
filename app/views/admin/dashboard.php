@@ -43,7 +43,7 @@
                 </table>
             </div>
             <div class="card-footer">
-                <a href="/admin/users" class="btn btn-secondary btn-sm">Voir tous les utilisateurs</a>
+                <a href="admin/users" class="btn btn-secondary btn-sm">Voir tous les utilisateurs</a>
             </div>
         </div>
 
@@ -70,7 +70,7 @@
                 </table>
             </div>
             <div class="card-footer">
-                <a href="/admin/posts" class="btn btn-secondary btn-sm">Voir toutes les publications</a>
+                <a href="admin/posts" class="btn btn-secondary btn-sm">Voir toutes les publications</a>
             </div>
         </div>
     </div>

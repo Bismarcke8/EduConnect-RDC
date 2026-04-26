@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="card-footer">
-                    <form method="POST" action="/messages/send" style="display: flex; gap: var(--spacing-md);">
+                    <form method="POST" action="messages/send" style="display: flex; gap: var(--spacing-md);">
                         <input type="hidden" name="recipient_id" value="<?php echo $recipient['id']; ?>">
                         <textarea name="content" placeholder="Écrivez un message..." required style="flex: 1;"></textarea>
                         <button type="submit" class="btn btn-primary" style="align-self: flex-end;">Envoyer</button>

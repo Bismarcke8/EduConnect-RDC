@@ -42,7 +42,7 @@
                             </p>
                         </div>
                         <?php if (!$notif['is_read']): ?>
-                            <form method="POST" action="/notification/<?php echo $notif['id']; ?>/read" style="display: inline;">
+                            <form method="POST" action="notification/<?php echo $notif['id']; ?>/read" style="display: inline;">
                                 <button type="submit" class="btn btn-primary btn-sm">Marquer comme lue</button>
                             </form>
                         <?php endif; ?>

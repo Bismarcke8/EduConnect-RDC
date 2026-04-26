@@ -37,14 +37,14 @@
     <!-- Pagination -->
     <div style="display: flex; justify-content: center; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="/admin/logs?page=<?php echo $i; ?>" 
+            <a href="admin/logs?page=<?php echo $i; ?>" 
                class="btn <?php echo $i === $page ? 'btn-primary' : 'btn-secondary'; ?>">
                 <?php echo $i; ?>
             </a>
         <?php endfor; ?>
     </div>
 
-    <a href="/admin/dashboard" class="btn btn-secondary" style="margin-top: var(--spacing-lg);">← Retour au dashboard</a>
+    <a href="admin/dashboard" class="btn btn-secondary" style="margin-top: var(--spacing-lg);">← Retour au dashboard</a>
 </div>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

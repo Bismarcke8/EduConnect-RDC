@@ -8,7 +8,7 @@
 
         <div class="card-body">
             <h3>Modifier votre profil</h3>
-            <form method="POST" action="/user/update-profile">
+            <form method="POST" action="user/update-profile">
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
                 <div class="form-group">
@@ -42,7 +42,7 @@
             <hr style="margin: var(--spacing-xl) 0; border: none; border-top: 1px solid var(--color-border);">
 
             <h3>Changer le mot de passe</h3>
-            <form method="POST" action="/user/change-password">
+            <form method="POST" action="user/change-password">
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
                 <div class="form-group">

@@ -62,7 +62,7 @@
     <?php endif; ?>
     
     <?php if (!empty($posts) && count($posts) === ITEMS_PER_PAGE): ?>
-        <a href="/posts?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Suivant →</a>
+        <a href="posts?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Suivant →</a>
     <?php endif; ?>
 </div>
 

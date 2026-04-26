@@ -14,7 +14,7 @@
                 <?php else: ?>
                     <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
                         <?php foreach ($conversations as $conv): ?>
-                            <a href="/messages/<?php echo $conv['id']; ?>" 
+                            <a href="messages/<?php echo $conv['id']; ?>" 
                                class="d-flex align-items-center"
                                style="padding: var(--spacing-md); border-radius: var(--radius-md); text-decoration: none; background-color: var(--color-surface-alt); color: var(--color-text); gap: var(--spacing-md);">
                                 <img src="<?php echo $conv['profile_photo'] ? '/' . $conv['profile_photo'] : '/EduConnect-RDC/public/assets/images/default-avatar.png'; ?>" 

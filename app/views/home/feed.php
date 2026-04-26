@@ -14,7 +14,7 @@
                     <h4><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></h4>
                     <p style="color: var(--color-text-secondary);"><?php echo htmlspecialchars($user['university'] ?? ''); ?></p>
                 </div>
-                <a href="profile?id=<?php echo $user['id']; ?>" class="btn btn-secondary btn-block" style="margin-top: var(--spacing-md);">Voir le profil</a>
+                <a href="profile/<?php echo $user['id']; ?>" class="btn btn-secondary btn-block" style="margin-top: var(--spacing-md);">Voir le profil</a>
             </div>
 
             <div class="card">

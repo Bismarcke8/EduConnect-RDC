@@ -25,7 +25,7 @@
                                 <?php echo htmlspecialchars($user['university']); ?>
                             </p>
                         <?php endif; ?>
-                        <a href="profile?id=<?php echo $user['id']; ?>" class="btn btn-primary btn-sm btn-block" style="margin-top: var(--spacing-md);">
+                        <a href="profile/<?php echo $user['id']; ?>" class="btn btn-primary btn-sm btn-block" style="margin-top: var(--spacing-md);">
                             Voir le profil
                         </a>
                     </div>

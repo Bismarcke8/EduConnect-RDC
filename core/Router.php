@@ -40,29 +40,24 @@ class Router
 
     public function dispatch()
     {
-        // Check if route exists
-        if (!isset($this->routes[$this->currentMethod][$this->currentUri])) {
-            http_response_code(404);
-            echo "404 - Page not found";
-            return;
-        }
-
-        $callback = $this->routes[$this->currentMethod][$this->currentUri];
-
-        if (is_callable($callback)) {
-            return call_user_func($callback);
-        }
-
-        // Handle string callbacks like 'HomeController@index'
-        if (is_string($callback)) {
+        // First try exact matches
+        if (isset($this->routes[$this->currentMethod][$this->currentUri])) {
+            $callback = $this->routes[$this->currentMethod][$this->currentUri];
             return $this->executeCallback($callback);
         }
 
-        http_response_code(500);
-        echo "500 - Internal Server Error";
+        // Then try pattern matches
+        foreach ($this->routes[$this->currentMethod] as $pattern => $callback) {
+            if ($this->match($pattern, $callback)) {
+                return;
+            }
+        }
+
+        http_response_code(404);
+        echo "404 - Page not found";
     }
 
-    private function executeCallback($callback)
+    private function executeCallback($callback, $params = [])
     {
         list($controller, $method) = explode('@', $callback);
         
@@ -78,7 +73,7 @@ class Router
             die("Method not found: " . $method);
         }
 
-        return $controllerInstance->$method();
+        return call_user_func_array([$controllerInstance, $method], $params);
     }
 
     private function parseUri()
@@ -101,8 +96,13 @@ class Router
 
     public function match($pattern, $callback)
     {
-        if (preg_match('#^' . $pattern . '$#', $this->currentUri, $matches)) {
-            array_shift($matches);
+        // Convert route pattern to regex
+        $regex = preg_replace('/\{([^}]+)\}/', '([^/]+)', $pattern);
+        $regex = preg_replace('/:([^\/]+)/', '([^/]+)', $regex);
+        $regex = '#^' . $regex . '$#';
+
+        if (preg_match($regex, $this->currentUri, $matches)) {
+            array_shift($matches); // Remove full match
             
             if (is_string($callback)) {
                 return $this->executeCallback($callback, $matches);
@@ -110,5 +110,7 @@ class Router
             
             return call_user_func_array($callback, $matches);
         }
+        
+        return false;
     }
 }

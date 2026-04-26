@@ -26,7 +26,7 @@
                             <?php endif; ?>
                         </a></li>
                         <li><a href="notifications">Notifications</a></li>
-                        <li><a href="profile?id=<?php echo $_SESSION['user_id']; ?>">Profil</a></li>
+                        <li><a href="profile/<?php echo $_SESSION['user_id']; ?>">Profil</a></li>
                         <li><a href="auth/logout">Déconnexion</a></li>
                     <?php else: ?>
                         <li><a href="auth/login">Connexion</a></li>

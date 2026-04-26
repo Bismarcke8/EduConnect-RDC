@@ -21,10 +21,8 @@ class UserController extends Controller
     /**
      * Show user profile
      */
-    public function profile()
+    public function profile($userId = null)
     {
-        $userId = $_GET['id'] ?? null;
-        
         if (!$userId) {
             $userId = $this->auth->getUserId();
         }

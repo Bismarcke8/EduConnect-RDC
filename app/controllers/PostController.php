@@ -74,9 +74,9 @@ class PostController extends Controller
     /**
      * Show single post
      */
-    public function show()
+    public function show($postId = null)
     {
-        $postId = intval($_GET['id'] ?? 0);
+        $postId = intval($postId ?? 0);
 
         $postModel = new Post();
         $post = $postModel->getWithStats($postId);

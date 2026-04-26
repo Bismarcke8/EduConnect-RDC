@@ -63,9 +63,13 @@ class MessageController extends Controller
         // Mark messages as read
         $messageModel->markAsRead($userId, $recipientId);
 
+        // Get conversations for sidebar
+        $conversations = $messageModel->getConversations($userId);
+
         $this->view('message/conversation', [
             'recipient' => $recipient,
             'messages' => array_reverse($messages),
+            'conversations' => $conversations,
             'csrf_token' => $_SESSION['csrf_token']
         ]);
     }

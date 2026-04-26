@@ -1,53 +1,57 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
-<div class="container-xl">
-    <div class="grid-2" style="gap: var(--spacing-lg); grid-template-columns: 300px 1fr;">
-        <!-- Conversations List -->
-        <aside>
-            <div class="card">
-                <h2 style="margin-bottom: var(--spacing-md);">💬 Messages</h2>
-                
-                <?php if (empty($conversations)): ?>
-                    <p style="color: var(--color-text-secondary); text-align: center;">
-                        Aucune conversation pour le moment
-                    </p>
-                <?php else: ?>
-                    <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                        <?php foreach ($conversations as $conv): ?>
-                            <a href="messages/<?php echo $conv['id']; ?>" 
-                               class="d-flex align-items-center"
-                               style="padding: var(--spacing-md); border-radius: var(--radius-md); text-decoration: none; background-color: var(--color-surface-alt); color: var(--color-text); gap: var(--spacing-md);">
-                                <img src="<?php echo $conv['profile_photo'] ? '/' . $conv['profile_photo'] : '/EduConnect-RDC/public/assets/images/default-avatar.png'; ?>" 
-                                     alt="<?php echo htmlspecialchars($conv['first_name']); ?>" 
-                                     class="avatar-sm">
-                                <div style="flex: 1; min-width: 0;">
-                                    <div style="font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                        <?php echo htmlspecialchars($conv['first_name'] . ' ' . $conv['last_name']); ?>
-                                    </div>
-                                    <p style="font-size: 0.85rem; color: var(--color-text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                        <?php echo htmlspecialchars(substr($conv['last_message'], 0, 30)); ?>
-                                    </p>
-                                </div>
-                                <?php if ($conv['unread_count'] > 0): ?>
-                                    <span style="background: var(--color-accent); color: var(--color-bg); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">
-                                        <?php echo $conv['unread_count']; ?>
-                                    </span>
-                                <?php endif; ?>
-                            </a>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </aside>
+<div class="messages-container">
+    <!-- Conversations Sidebar -->
+    <div class="messages-sidebar">
+        <div class="messages-header">
+            <h2>💬 Messages</h2>
+        </div>
 
-        <!-- Conversation Area -->
-        <main>
-            <div class="card">
-                <p style="color: var(--color-text-secondary); text-align: center; padding: var(--spacing-xl) 0;">
-                    Sélectionnez une conversation pour commencer à discuter
-                </p>
+        <div class="conversations-list">
+            <?php if (empty($conversations)): ?>
+                <div style="padding: var(--spacing-lg); text-align: center; color: var(--color-text-secondary);">
+                    Aucune conversation pour le moment
+                </div>
+            <?php else: ?>
+                <?php foreach ($conversations as $conv): ?>
+                    <a href="messages/<?php echo $conv['id']; ?>"
+                       class="conversation-item <?php echo (isset($_GET['id']) && $_GET['id'] == $conv['id']) ? 'active' : ''; ?>">
+                        <img src="<?php echo $conv['profile_photo'] ? '/' . $conv['profile_photo'] : '/EduConnect-RDC/public/assets/images/default-avatar.png'; ?>"
+                             alt="<?php echo htmlspecialchars($conv['first_name']); ?>"
+                             class="avatar">
+                        <div class="conversation-info">
+                            <div class="conversation-name">
+                                <?php echo htmlspecialchars($conv['first_name'] . ' ' . $conv['last_name']); ?>
+                            </div>
+                            <p class="conversation-preview">
+                                <?php echo htmlspecialchars(substr($conv['last_message'], 0, 40)); ?>
+                            </p>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                            <span class="conversation-time">
+                                <?php echo date('H:i', strtotime($conv['last_message_time'])); ?>
+                            </span>
+                            <?php if ($conv['unread_count'] > 0): ?>
+                                <span class="unread-badge">
+                                    <?php echo $conv['unread_count']; ?>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="messages-main">
+        <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary);">
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">💬</div>
+                <h3>Sélectionnez une conversation</h3>
+                <p>Choisissez une conversation dans la liste pour commencer à discuter</p>
             </div>
-        </main>
+        </div>
     </div>
 </div>
 

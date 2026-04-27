@@ -297,7 +297,7 @@ class PostController extends Controller
     /**
      * Add comment
      */
-    public function comment()
+    public function comment($postId = null)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
@@ -306,7 +306,7 @@ class PostController extends Controller
 
         $this->requireAuth();
 
-        $postId = intval($_POST['post_id'] ?? 0);
+        $postId = intval($postId ?? 0);
         $content = Security::sanitize($_POST['content'] ?? '');
         $userId = $this->auth->getUserId();
 

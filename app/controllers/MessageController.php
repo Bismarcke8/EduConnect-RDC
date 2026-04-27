@@ -38,9 +38,9 @@ class MessageController extends Controller
     /**
      * Show conversation with a specific user
      */
-    public function conversation()
+    public function conversation($recipientId = null)
     {
-        $recipientId = intval($_GET['id'] ?? 0);
+        $recipientId = intval($recipientId ?? 0);
         $userId = $this->auth->getUserId();
 
         if ($recipientId == $userId) {

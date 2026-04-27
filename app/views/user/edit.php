@@ -69,7 +69,8 @@
             
             <!-- Current photo preview -->
             <div class="current-photo-preview" style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <img src="<?php echo $user['profile_photo'] ? APP_BASE_PATH . '/uploads/' . $user['profile_photo'] : 'https://via.placeholder.com/120x120/4cc2ff/ffffff?text=' . urlencode(substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1)); ?>" 
+                <img src="<?php echo $user['profile_photo'] ? APP_BASE_PATH . '/' . $user['profile_photo'] : 'https://via.placeholder.com/120x120/4cc2ff/ffffff?text=' . urlencode(substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1)); ?>" 
+ 
                      alt="Photo actuelle" 
                      style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--color-border);">
                 <p style="margin-top: var(--spacing-sm); color: var(--color-text-secondary); font-size: 0.9rem;">Photo actuelle</p>

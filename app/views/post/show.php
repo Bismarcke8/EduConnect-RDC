@@ -4,7 +4,8 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex align-items-center" style="gap: var(--spacing-md);">
-                <img src="<?php echo $post['profile_photo'] ? APP_BASE_PATH . '/uploads/' . $post['profile_photo'] : 'https://via.placeholder.com/40x40/4cc2ff/ffffff?text=' . urlencode(substr($post['first_name'], 0, 1) . substr($post['last_name'], 0, 1)); ?>" 
+                <img src="<?php echo $post['profile_photo'] ? APP_BASE_PATH . '/' . $post['profile_photo'] : 'https://via.placeholder.com/40x40/4cc2ff/ffffff?text=' . urlencode(substr($post['first_name'], 0, 1) . substr($post['last_name'], 0, 1)); ?>" 
+ 
                      alt="<?php echo htmlspecialchars($post['first_name']); ?>" 
                      class="avatar">
                 <div>

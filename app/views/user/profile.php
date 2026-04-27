@@ -4,7 +4,8 @@
     <section class="card ec-profile-hero">
         <div class="ec-cover-gradient"></div>
         <div class="ec-profile-hero-content">
-            <img src="<?php echo $user['profile_photo'] ? APP_BASE_PATH . '/uploads/' . $user['profile_photo'] : 'https://via.placeholder.com/150x150/4cc2ff/ffffff?text=' . urlencode(substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1)); ?>"
+            <img src="<?php echo $user['profile_photo'] ? APP_BASE_PATH . '/' . $user['profile_photo'] : 'https://via.placeholder.com/150x150/4cc2ff/ffffff?text=' . urlencode(substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1)); ?>"
+
                  alt="<?php echo htmlspecialchars($user['first_name']); ?>"
                  class="avatar avatar-lg ec-profile-avatar">
             <div>
@@ -80,7 +81,8 @@
                         <?php foreach ($pendingInvites as $invite): ?>
                             <div class="d-flex align-items-center justify-content-between ec-invite-row">
                                 <div class="d-flex align-items-center gap-2">
-                                    <img src="<?php echo $invite['profile_photo'] ? APP_BASE_PATH . '/uploads/' . $invite['profile_photo'] : 'https://via.placeholder.com/40x40/4cc2ff/ffffff?text=' . urlencode(substr($invite['first_name'], 0, 1) . substr($invite['last_name'], 0, 1)); ?>"
+                                    <img src="<?php echo $invite['profile_photo'] ? APP_BASE_PATH . '/' . $invite['profile_photo'] : 'https://via.placeholder.com/40x40/4cc2ff/ffffff?text=' . urlencode(substr($invite['first_name'], 0, 1) . substr($invite['last_name'], 0, 1)); ?>"
+
                                          alt="<?php echo htmlspecialchars($invite['first_name']); ?>"
                                          class="avatar avatar-sm">
                                     <div>
@@ -124,7 +126,8 @@
                         <?php foreach ($posts as $post): ?>
                             <article class="ec-post-card">
                                 <div class="ec-post-header">
-                                    <img src="<?php echo $user['profile_photo'] ? APP_BASE_PATH . '/uploads/' . $user['profile_photo'] : 'https://via.placeholder.com/40x40/4cc2ff/ffffff?text=' . urlencode(substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1)); ?>"
+                                    <img src="<?php echo $user['profile_photo'] ? APP_BASE_PATH . '/' . $user['profile_photo'] : 'https://via.placeholder.com/40x40/4cc2ff/ffffff?text=' . urlencode(substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1)); ?>"
+
                                          alt="<?php echo htmlspecialchars($user['first_name']); ?>"
                                          class="avatar avatar-sm">
                                     <div class="ec-post-meta">

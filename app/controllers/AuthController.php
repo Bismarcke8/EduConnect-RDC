@@ -59,6 +59,14 @@ class AuthController extends Controller
         $result = $this->auth->login($email, $password);
 
         if ($result['success']) {
+            // Check if trying to login as admin but not the admin account
+            if ($this->auth->isAdmin() && $email !== 'admin@educonnect.rdc') {
+                // Logout the user
+                $this->auth->logout();
+                $_SESSION['error'] = 'Accès refusé. Seule l\'administration peut se connecter avec ce rôle.';
+                $this->redirect('/auth/login');
+            }
+
             $_SESSION['success'] = 'Welcome back!';
             if ($this->auth->isAdmin()) {
                 $this->redirect('/admin/dashboard');

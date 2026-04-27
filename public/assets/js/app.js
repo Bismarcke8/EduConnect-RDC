@@ -133,8 +133,9 @@ function handleMessage(e) {
  * Initialize real-time notifications
  */
 function initializeNotifications() {
-    // Check for new notifications every 30 seconds
-    setInterval(checkNotifications, 30000);
+    // Check for new notifications immediately and every 10 seconds
+    checkNotifications();
+    setInterval(checkNotifications, 10000);
 }
 
 /**

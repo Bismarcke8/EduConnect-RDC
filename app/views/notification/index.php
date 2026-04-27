@@ -20,23 +20,38 @@
                         <div style="flex: 1;">
                             <?php 
                             $message = '';
+                            $url = '#';
                             switch ($notif['type']) {
                                 case 'like':
                                     $message = 'a aimé votre publication';
+                                    $url = 'post/' . intval($notif['post_id']);
                                     break;
                                 case 'comment':
                                     $message = 'a commenté votre publication';
+                                    $url = 'post/' . intval($notif['post_id']);
                                     break;
                                 case 'message':
                                     $message = 'vous a envoyé un message';
+                                    $url = 'messages/' . intval($notif['from_user_id']);
+                                    break;
+                                case 'invite':
+                                    $message = 'vous a envoyé une invitation';
+                                    $url = 'user/invitations';
+                                    break;
+                                case 'publication':
+                                    $message = 'a publié une nouvelle publication';
+                                    $url = 'post/' . intval($notif['post_id']);
                                     break;
                                 case 'follow':
                                     $message = 'vous suit';
+                                    $url = 'profile/' . intval($notif['from_user_id']);
                                     break;
                             }
                             ?>
-                            <strong><?php echo htmlspecialchars($notif['first_name'] . ' ' . $notif['last_name']); ?></strong>
-                            <span style="color: var(--color-text-secondary);"> <?php echo $message; ?></span>
+                            <a href="<?php echo $url; ?>" style="text-decoration: none; color: inherit;">
+                                <strong><?php echo htmlspecialchars($notif['first_name'] . ' ' . $notif['last_name']); ?></strong>
+                                <span style="color: var(--color-text-secondary);"> <?php echo $message; ?></span>
+                            </a>
                             <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: var(--spacing-sm);">
                                 <?php echo date('d M Y à H:i', strtotime($notif['created_at'])); ?>
                             </p>

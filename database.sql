@@ -141,7 +141,7 @@ CREATE TABLE notifications (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     from_user_id INT NOT NULL,
-    type ENUM('like', 'comment', 'message', 'follow') NOT NULL,
+    type ENUM('like', 'comment', 'message', 'follow', 'invite', 'publication') NOT NULL,
     post_id INT,
     comment_id INT,
     is_read TINYINT(1) DEFAULT 0,

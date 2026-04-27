@@ -79,9 +79,25 @@ class UserController extends Controller
         $userId = $this->auth->getUserId();
         $userModel = new User();
 
+        $friends = $userModel->getFriends($userId, 200);
+        $allUsers = $userModel->getAllUsersExcept($userId, 200);
+        $friendRequests = $userModel->getFriendRequests($userId);
+
+        $inviteStatus = [];
+        foreach ($friendRequests as $request) {
+            if ($request['sender_id'] == $userId) {
+                $inviteStatus[$request['receiver_id']] = ['direction' => 'outgoing', 'status' => $request['status']];
+            } else {
+                $inviteStatus[$request['sender_id']] = ['direction' => 'incoming', 'status' => $request['status']];
+            }
+        }
+
         $this->view('user/invitations', [
             'incomingInvites' => $userModel->getIncomingPendingInvites($userId, 100),
             'outgoingInvites' => $userModel->getOutgoingPendingInvites($userId, 100),
+            'friends' => $friends,
+            'allUsers' => $allUsers,
+            'inviteStatus' => $inviteStatus,
             'csrf_token' => $_SESSION['csrf_token']
         ]);
     }
@@ -329,7 +345,7 @@ class UserController extends Controller
         $this->db->insert('notifications', [
             'user_id' => $receiverId,
             'from_user_id' => $senderId,
-            'type' => 'follow'
+            'type' => 'invite'
         ]);
 
         if ($this->isAjaxRequest()) {

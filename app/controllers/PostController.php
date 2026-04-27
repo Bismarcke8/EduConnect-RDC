@@ -167,6 +167,25 @@ class PostController extends Controller
             'is_published' => 1
         ]);
 
+        // Notify followers of the new publication
+        $followers = $this->db->fetchAll(
+            "SELECT follower_id FROM followers WHERE following_id = ?",
+            [$this->auth->getUserId()]
+        );
+
+        foreach ($followers as $follower) {
+            if ($follower['follower_id'] == $this->auth->getUserId()) {
+                continue;
+            }
+
+            $this->db->insert('notifications', [
+                'user_id' => $follower['follower_id'],
+                'from_user_id' => $this->auth->getUserId(),
+                'type' => 'publication',
+                'post_id' => $postId
+            ]);
+        }
+
         $_SESSION['success'] = 'Publication créée avec succès';
         $this->redirect('post/' . $postId);
     }

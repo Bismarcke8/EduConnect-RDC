@@ -50,7 +50,11 @@ class NotificationController extends Controller
         }
 
         if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
-            $this->json(['success' => false, 'error' => 'Invalid CSRF token'], 403);
+            if ($this->isAjaxRequest()) {
+                $this->json(['success' => false, 'error' => 'Invalid CSRF token'], 403);
+            }
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/notifications');
         }
 
         $notificationId = intval($notificationId ?? ($_POST['notification_id'] ?? 0));
@@ -63,13 +67,27 @@ class NotificationController extends Controller
         );
 
         if (!$notification) {
-            http_response_code(403);
-            die('You do not have permission');
+            if ($this->isAjaxRequest()) {
+                http_response_code(403);
+                $this->json(['success' => false, 'error' => 'You do not have permission'], 403);
+            }
+            $_SESSION['error'] = 'Vous n’avez pas la permission';
+            $this->redirect('/notifications');
         }
 
         $this->db->update('notifications', ['is_read' => 1], ['id' => $notificationId]);
 
-        $this->json(['success' => true]);
+        if ($this->isAjaxRequest()) {
+            $this->json(['success' => true]);
+        }
+
+        $_SESSION['success'] = 'Notification marquée comme lue';
+        $this->redirect('/notifications');
+    }
+
+    private function isAjaxRequest()
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower((string) $_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
 
     /**

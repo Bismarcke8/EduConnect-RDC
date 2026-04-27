@@ -10,15 +10,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
+<body data-user-id="<?php echo isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : ''; ?>">
     <?php
     $pendingInvitesCount = 0;
+    $notificationCount = 0;
     if (isset($_SESSION['user_id'])) {
         try {
             $inviteUserModel = new \App\Models\User();
             $pendingInvitesCount = $inviteUserModel->countIncomingPendingInvites((int) $_SESSION['user_id']);
+            $notificationCount = \Core\Database::getInstance()->count('notifications', ['user_id' => (int) $_SESSION['user_id'], 'is_read' => 0]);
         } catch (\Throwable $e) {
             $pendingInvitesCount = 0;
+            $notificationCount = 0;
         }
     }
     ?>
@@ -48,7 +51,16 @@
                                 <?php endif; ?>
                             </a>
                         </li>
-                        <li><a href="notifications" class="ec-nav-link">Notifications</a></li>
+                        <li>
+                            <a href="notifications" class="ec-nav-link ec-nav-link-with-badge">
+                                Notifications
+                                <?php if ($notificationCount > 0): ?>
+                                    <span class="ec-nav-badge notification-badge"><?php echo (int) $notificationCount; ?></span>
+                                <?php else: ?>
+                                    <span class="ec-nav-badge notification-badge" style="display: none;"></span>
+                                <?php endif; ?>
+                            </a>
+                        </li>
                     </ul>
 
                     <div class="ec-nav-right">

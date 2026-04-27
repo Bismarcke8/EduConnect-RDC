@@ -25,12 +25,15 @@ class MessageController extends Controller
     public function inbox()
     {
         $messageModel = new Message();
+        $userModel = new User();
         $userId = $this->auth->getUserId();
 
         $conversations = $messageModel->getConversations($userId);
+        $friends = $userModel->getFriends($userId, 100);
 
         $this->view('message/inbox', [
             'conversations' => $conversations,
+            'friends' => $friends,
             'unread_count' => $messageModel->getUnreadCount($userId)
         ]);
     }
@@ -65,11 +68,13 @@ class MessageController extends Controller
 
         // Get conversations for sidebar
         $conversations = $messageModel->getConversations($userId);
+        $friends = $userModel->getFriends($userId, 100);
 
         $this->view('message/conversation', [
             'recipient' => $recipient,
             'messages' => array_reverse($messages),
             'conversations' => $conversations,
+            'friends' => $friends,
             'csrf_token' => $_SESSION['csrf_token']
         ]);
     }
@@ -127,6 +132,10 @@ class MessageController extends Controller
             'from_user_id' => $userId,
             'type' => 'message'
         ]);
+
+        if ($this->isAjaxRequest()) {
+            $this->json(['success' => true, 'recipient_id' => $recipientId]);
+        }
 
         $_SESSION['success'] = 'Message sent';
         $this->redirect('/messages/' . $recipientId);
@@ -188,5 +197,10 @@ class MessageController extends Controller
             'content' => $content,
             'created_at' => date('Y-m-d H:i:s')
         ]);
+    }
+
+    private function isAjaxRequest()
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower((string) $_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
 }

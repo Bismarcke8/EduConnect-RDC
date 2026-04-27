@@ -7,6 +7,20 @@
             <h2>💬 Messages</h2>
         </div>
 
+        <?php if (!empty($friends)): ?>
+            <div class="ec-friend-selector card mb-3 p-3">
+                <label for="friend-select" class="form-label mb-2">Choisir un ami pour démarrer une conversation</label>
+                <select id="friend-select" class="form-select">
+                    <option value="">-- Sélectionnez un ami --</option>
+                    <?php foreach ($friends as $friend): ?>
+                        <option value="messages/<?php echo (int) $friend['id']; ?>">
+                            <?php echo htmlspecialchars($friend['first_name'] . ' ' . $friend['last_name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        <?php endif; ?>
+
         <div class="conversations-list">
             <?php if (empty($conversations)): ?>
                 <div style="padding: var(--spacing-lg); text-align: center; color: var(--color-text-secondary);">
@@ -62,5 +76,12 @@
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('friend-select')?.addEventListener('change', function () {
+    if (!this.value) return;
+    window.location.href = this.value;
+});
+</script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

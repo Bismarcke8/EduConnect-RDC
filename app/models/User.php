@@ -68,6 +68,42 @@ class User extends Model
     }
 
     /**
+     * Get user's mutual friends
+     */
+    public function getFriends($userId, $limit = 100)
+    {
+        $sql = "SELECT u.id, u.first_name, u.last_name, u.profile_photo
+                FROM followers f1
+                JOIN followers f2 ON f1.following_id = f2.follower_id AND f2.following_id = ?
+                JOIN users u ON u.id = f1.following_id
+                WHERE f1.follower_id = ?
+                ORDER BY u.first_name, u.last_name
+                LIMIT ?";
+
+        return $this->query($sql, [$userId, $userId, $limit])->fetchAll();
+    }
+
+    public function getAllUsersExcept($userId, $limit = 100)
+    {
+        $sql = "SELECT id, first_name, last_name, profile_photo, university
+                FROM users
+                WHERE id != ? AND is_active = 1
+                ORDER BY first_name, last_name
+                LIMIT ?";
+
+        return $this->query($sql, [$userId, $limit])->fetchAll();
+    }
+
+    public function getFriendRequests($userId)
+    {
+        $this->ensureFriendRequestsTable();
+        $sql = "SELECT sender_id, receiver_id, status
+                FROM friend_requests
+                WHERE sender_id = ? OR receiver_id = ?";
+        return $this->query($sql, [$userId, $userId])->fetchAll();
+    }
+
+    /**
      * Get user's skills
      */
     public function getSkills($userId)

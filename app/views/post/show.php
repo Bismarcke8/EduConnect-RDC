@@ -4,7 +4,7 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex align-items-center" style="gap: var(--spacing-md);">
-                <img src="<?php echo $post['profile_photo'] ? '/' . $post['profile_photo'] : '/EduConnect-RDC/public/assets/images/default-avatar.png'; ?>" 
+                <img src="<?php echo $post['profile_photo'] ? APP_BASE_PATH . '/uploads/' . $post['profile_photo'] : 'https://via.placeholder.com/40x40/4cc2ff/ffffff?text=' . urlencode(substr($post['first_name'], 0, 1) . substr($post['last_name'], 0, 1)); ?>" 
                      alt="<?php echo htmlspecialchars($post['first_name']); ?>" 
                      class="avatar">
                 <div>
@@ -24,7 +24,7 @@
             <?php endif; ?>
             <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
             <?php if (!empty($post['image_path'])): ?>
-                <img src="/<?php echo $post['image_path']; ?>" 
+                <img src="<?php echo APP_BASE_PATH . '/uploads/posts/' . $post['image_path']; ?>" 
                      alt="Post image" 
                      style="max-width: 100%; height: auto; border-radius: var(--radius-md); margin-top: var(--spacing-lg);">
             <?php endif; ?>
@@ -33,10 +33,13 @@
         <div class="card-footer">
             <div class="d-flex justify-content-between">
                 <div style="display: flex; gap: var(--spacing-lg);">
-                    <button class="btn-like" data-post-id="<?php echo $post['id']; ?>" style="border: none; background: none; cursor: pointer; color: var(--color-text-secondary);">
-                        <?php echo $post['liked_by_user'] ? '❤️' : '🤍'; ?> 
-                        <span><?php echo $post['likes_count']; ?> J'aime</span>
-                    </button>
+                    <form method="POST" action="post/<?php echo $post['id']; ?>/like" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                        <button type="submit" class="btn btn-link p-0 <?php echo $post['liked_by_user'] ? 'text-primary' : 'text-muted'; ?>" style="border: none; background: none;">
+                            <?php echo $post['liked_by_user'] ? '❤️' : '🤍'; ?> 
+                            <span><?php echo $post['likes_count']; ?> J'aime</span>
+                        </button>
+                    </form>
                     <span style="color: var(--color-text-secondary);">💬 <?php echo count($post['comments']); ?> Commentaires</span>
                 </div>
             </div>

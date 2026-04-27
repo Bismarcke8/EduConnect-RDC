@@ -47,12 +47,25 @@ class UserController extends Controller
         $incomingInvitePending = $userId != $currentUserId && $userModel->getPendingInviteFrom($userId, $currentUserId);
         $pendingInvites = ($userId == $currentUserId) ? $userModel->getIncomingPendingInvites($currentUserId) : [];
 
+        // Get user's posts
+        $posts = $this->db->fetchAll(
+            "SELECT p.*, 
+                    (SELECT COUNT(*) FROM likes WHERE post_id = p.id) as likes_count,
+                    (SELECT COUNT(*) FROM comments WHERE post_id = p.id) as comments_count,
+                    EXISTS(SELECT 1 FROM likes WHERE post_id = p.id AND user_id = ?) as is_liked
+             FROM posts p 
+             WHERE p.user_id = ? AND p.is_published = 1 
+             ORDER BY p.created_at DESC",
+            [$currentUserId, $userId]
+        );
+
         $this->view('user/profile', [
             'user' => $user,
             'skills' => $skills,
             'followersCount' => $followersCount,
             'followingCount' => $followingCount,
             'postsCount' => $postsCount,
+            'posts' => $posts,
             'isFollowing' => $isFollowing,
             'isOwnProfile' => $userId == $currentUserId,
             'outgoingInvitePending' => !empty($outgoingInvitePending),
@@ -81,7 +94,7 @@ class UserController extends Controller
         $userModel = new User();
         $user = $userModel->find($this->auth->getUserId());
 
-        $this->view('user/settings', [
+        $this->view('user/edit', [
             'user' => $user,
             'csrf_token' => $_SESSION['csrf_token']
         ]);

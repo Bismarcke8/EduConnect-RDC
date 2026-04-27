@@ -20,9 +20,9 @@
 
         <div class="card-body">
             <?php if (!empty($post['title'])): ?>
-                <h2><?php echo htmlspecialchars($post['title']); ?></h2>
+                <h2 style="color: #ffffff !important; font-weight: 600;"><?php echo htmlspecialchars($post['title']); ?></h2>
             <?php endif; ?>
-            <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
+            <p style="color: #e0e0e0 !important; line-height: 1.6;"><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
             <?php if (!empty($post['image_path'])): ?>
                 <img src="<?php echo APP_BASE_PATH . '/uploads/posts/' . $post['image_path']; ?>" 
                      alt="Post image" 

@@ -384,6 +384,104 @@ main.full-width {
     padding: var(--spacing-md) 0;
 }
 
+.card-body h1, .card-body h2, .card-body h3, .card-body h4, .card-body h5, .card-body h6 {
+    color: var(--color-text);
+    margin-bottom: var(--spacing-md);
+}
+
+.card-body p {
+    color: var(--color-text);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-body a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.card-body a:hover {
+    color: var(--color-accent-dark);
+    text-decoration: underline;
+}
+
+/* ===== POST CONTENT SPECIFIC ===== */
+.card-body .post-content {
+    color: var(--color-text) !important;
+}
+
+.card-body .post-content h4 {
+    color: var(--color-text) !important;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+}
+
+.card-body .post-content p {
+    color: var(--color-text) !important;
+    line-height: 1.6;
+}
+
+/* ===== PUBLICATION TEXT VISIBILITY - HIGH PRIORITY ===== */
+.card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+.card p, .card div, .card span {
+    color: #e0e0e0 !important;
+}
+
+.card a:not(.btn) {
+    color: #4cc2ff !important;
+    text-decoration: none !important;
+}
+
+.card a:not(.btn):hover {
+    color: #2299dd !important;
+    text-decoration: underline !important;
+}
+
+/* ===== SPECIFIC POST CONTENT ===== */
+.card .card-body h4 {
+    color: #ffffff !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.card .card-body p {
+    color: #e0e0e0 !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1rem !important;
+}
+
+.card .card-body a {
+    color: #4cc2ff !important;
+    font-weight: 500 !important;
+}
+
+.card .card-body a:hover {
+    color: #2299dd !important;
+}
+
+/* ===== POST ACTIONS ===== */
+.card .card-footer .btn-link {
+    color: #b0b0b0 !important;
+    text-decoration: none !important;
+}
+
+.card .card-footer .btn-link:hover {
+    color: #4cc2ff !important;
+}
+
+.card .card-footer .text-primary {
+    color: #4cc2ff !important;
+}
+
+.card .card-footer .text-muted {
+    color: #808080 !important;
+}
+
 .card-footer {
     border-top: 1px solid var(--color-border);
     padding-top: var(--spacing-md);
@@ -899,8 +997,15 @@ footer {
     border: 1px solid var(--color-border);
 }
 
-.btn-secondary:hover {
-    background-color: var(--color-surface-alt);
+.btn-outline-primary {
+    background-color: transparent;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
 }
 
 /* ===== POST STYLES ===== */

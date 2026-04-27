@@ -14,7 +14,7 @@
         </div>
     <?php else: ?>
         <?php foreach ($posts as $post): ?>
-            <article class="card ec-post-card">
+            <article class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center" style="gap: var(--spacing-md); flex: 1;">
                         <img src="<?php echo $post['profile_photo'] ? APP_BASE_PATH . '/uploads/' . $post['profile_photo'] : 'https://via.placeholder.com/40x40/4cc2ff/ffffff?text=' . urlencode(substr($post['first_name'], 0, 1) . substr($post['last_name'], 0, 1)); ?>" 
@@ -33,9 +33,9 @@
 
                 <div class="card-body">
                     <?php if (!empty($post['title'])): ?>
-                        <h4><?php echo htmlspecialchars($post['title']); ?></h4>
+                        <h4 style="color: #ffffff !important; font-weight: 600;"><?php echo htmlspecialchars($post['title']); ?></h4>
                     <?php endif; ?>
-                    <p><?php echo nl2br(htmlspecialchars(substr($post['content'], 0, 150))); ?></p>
+                    <p style="color: #e0e0e0 !important; line-height: 1.6;"><?php echo nl2br(htmlspecialchars(substr($post['content'], 0, 150))); ?></p>
                     <a href="post/<?php echo $post['id']; ?>" class="btn btn-secondary btn-sm">Lire plus →</a>
                     
                     <?php if (!empty($post['image_path'])): ?>

@@ -21,6 +21,7 @@
                     <div class="d-flex gap-2">
                         <a href="user/invitations" class="btn btn-secondary">Invitations</a>
                         <a href="user/settings" class="btn btn-primary">Modifier le profil</a>
+                        <a href="user/settings#photo-section" class="btn btn-outline-primary">📸 Photo</a>
                     </div>
                 <?php elseif ($isFollowing): ?>
                     <form method="POST" action="user/<?php echo $user['id']; ?>/unfollow">
@@ -134,9 +135,9 @@
                                 
                                 <div class="ec-post-content">
                                     <?php if (!empty($post['title'])): ?>
-                                        <h4><?php echo htmlspecialchars($post['title']); ?></h4>
+                                        <h4 style="color: #ffffff !important;"><?php echo htmlspecialchars($post['title']); ?></h4>
                                     <?php endif; ?>
-                                    <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
+                                    <p style="color: #e0e0e0 !important;"><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
                                     <?php if (!empty($post['image_path'])): ?>
                                         <img src="<?php echo APP_BASE_PATH . '/uploads/posts/' . $post['image_path']; ?>" 
                                              alt="Post image" class="ec-post-image">

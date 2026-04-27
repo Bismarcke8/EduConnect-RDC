@@ -295,7 +295,16 @@ class PostController extends Controller
 
         $likesCount = $this->db->count('likes', ['post_id' => $postId]);
 
-        $this->json(['success' => true, 'liked' => !$alreadyLiked, 'likes_count' => $likesCount]);
+        // Redirect back to the referring page or post page
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        if (strpos($referer, 'post/' . $postId) !== false) {
+            $this->redirect('post/' . $postId);
+        } elseif (strpos($referer, 'profile/') !== false) {
+            // Stay on profile page
+            $this->redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            $this->redirect('feed');
+        }
     }
 
     /**

@@ -30,11 +30,11 @@
 
                 <div class="card-body">
                     <?php if (!empty($post['title'])): ?>
-                        <h4><?php echo htmlspecialchars($post['title']); ?></h4>
+                        <h4 style="color: #ffffff !important; font-weight: 600;"><?php echo htmlspecialchars($post['title']); ?></h4>
                     <?php endif; ?>
-                    <p><?php echo nl2br(htmlspecialchars(substr($post['content'], 0, 200))); ?></p>
+                    <p style="color: #e0e0e0 !important; line-height: 1.6;"><?php echo nl2br(htmlspecialchars(substr($post['content'], 0, 200))); ?></p>
                     <?php if (strlen($post['content']) > 200): ?>
-                        <a href="post/<?php echo $post['id']; ?>" style="color: var(--color-accent);">Lire plus...</a>
+                        <a href="post/<?php echo $post['id']; ?>" style="color: #4cc2ff !important;">Lire plus...</a>
                     <?php endif; ?>
                     
                     <?php if (!empty($post['image_path'])): ?>

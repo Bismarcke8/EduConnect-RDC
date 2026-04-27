@@ -47,12 +47,16 @@
     <div class="messages-main">
         <!-- Chat Header -->
         <div class="chat-header">
-            <img src="<?php echo $recipient['profile_photo'] ? '/' . $recipient['profile_photo'] : '/EduConnect-RDC/public/assets/images/default-avatar.png'; ?>"
+            <img src="<?php echo $recipient['profile_photo'] ? '/' . $recipient['profile_photo'] : APP_BASE_PATH . '/assets/images/default-avatar.png'; ?>"
                  alt="<?php echo htmlspecialchars($recipient['first_name']); ?>"
                  class="avatar">
             <div class="chat-header-info">
                 <h4><?php echo htmlspecialchars($recipient['first_name'] . ' ' . $recipient['last_name']); ?></h4>
                 <p>En ligne</p>
+            </div>
+            <div class="ms-auto d-flex gap-2">
+                <a href="profile/<?php echo $recipient['id']; ?>" class="btn btn-secondary btn-sm">Profil</a>
+                <a href="messages" class="btn btn-secondary btn-sm">Retour</a>
             </div>
         </div>
 
@@ -84,13 +88,18 @@
         <div class="chat-input-area">
             <form method="POST" action="messages/send" class="message-form">
                 <input type="hidden" name="recipient_id" value="<?php echo $recipient['id']; ?>">
-                <textarea name="content"
-                          class="message-input"
-                          placeholder="Écrivez un message..."
-                          required
-                          rows="1"
-                          onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); this.form.submit(); }"></textarea>
-                <button type="submit" class="send-button">Envoyer</button>
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token ?? ($_SESSION['csrf_token'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
+                <div class="ec-messenger-composer">
+                    <button type="button" class="ec-composer-icon" title="Emoji">😊</button>
+                    <button type="button" class="ec-composer-icon" title="Pièce jointe">📎</button>
+                    <textarea name="content"
+                              class="message-input"
+                              placeholder="Aa"
+                              required
+                              rows="1"
+                              onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); this.form.submit(); }"></textarea>
+                    <button type="submit" class="send-button" title="Envoyer">➤</button>
+                </div>
             </form>
         </div>
     </div>

@@ -59,8 +59,7 @@ class Controller
         }
         
         // Add base path for correct redirection
-        $basePath = '/EduConnect-RDC/public';
-        $fullUrl = $basePath . $url;
+        $fullUrl = APP_BASE_PATH . $url;
         
         header("Location: " . $fullUrl);
         exit;

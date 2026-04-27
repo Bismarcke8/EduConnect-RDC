@@ -42,6 +42,10 @@ class UserController extends Controller
         $postsCount = $this->db->count('posts', ['user_id' => $userId]);
         $isFollowing = $userId != $this->auth->getUserId() && 
                       $userModel->isFollowing($this->auth->getUserId(), $userId);
+        $currentUserId = $this->auth->getUserId();
+        $outgoingInvitePending = $userId != $currentUserId && $userModel->getPendingInviteFrom($currentUserId, $userId);
+        $incomingInvitePending = $userId != $currentUserId && $userModel->getPendingInviteFrom($userId, $currentUserId);
+        $pendingInvites = ($userId == $currentUserId) ? $userModel->getIncomingPendingInvites($currentUserId) : [];
 
         $this->view('user/profile', [
             'user' => $user,
@@ -50,7 +54,22 @@ class UserController extends Controller
             'followingCount' => $followingCount,
             'postsCount' => $postsCount,
             'isFollowing' => $isFollowing,
-            'isOwnProfile' => $userId == $this->auth->getUserId()
+            'isOwnProfile' => $userId == $currentUserId,
+            'outgoingInvitePending' => !empty($outgoingInvitePending),
+            'incomingInvitePending' => !empty($incomingInvitePending),
+            'pendingInvites' => $pendingInvites
+        ]);
+    }
+
+    public function invitations()
+    {
+        $userId = $this->auth->getUserId();
+        $userModel = new User();
+
+        $this->view('user/invitations', [
+            'incomingInvites' => $userModel->getIncomingPendingInvites($userId, 100),
+            'outgoingInvites' => $userModel->getOutgoingPendingInvites($userId, 100),
+            'csrf_token' => $_SESSION['csrf_token']
         ]);
     }
 
@@ -96,7 +115,7 @@ class UserController extends Controller
         $this->db->update('users', $data, ['id' => $userId]);
 
         $_SESSION['success'] = 'Profile updated successfully';
-        $this->redirect('/profile?id=' . $userId);
+        $this->redirect('/profile/' . $userId);
     }
 
     /**
@@ -149,6 +168,10 @@ class UserController extends Controller
             die('Method not allowed');
         }
 
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $this->json(['success' => false, 'error' => 'Invalid CSRF token'], 403);
+        }
+
         if (!isset($_FILES['photo'])) {
             $this->json(['success' => false, 'error' => 'No file uploaded'], 400);
         }
@@ -181,19 +204,24 @@ class UserController extends Controller
     /**
      * Follow user
      */
-    public function follow()
+    public function follow($followingId = null)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             die('Method not allowed');
         }
 
-        $followingId = intval($_POST['user_id'] ?? 0);
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/feed');
+        }
+
+        $followingId = intval($followingId ?? ($_POST['user_id'] ?? 0));
         $followerId = $this->auth->getUserId();
 
         if ($followingId == $followerId) {
             $_SESSION['error'] = 'You cannot follow yourself';
-            $this->redirect('/profile?id=' . $followingId);
+            $this->redirect('/profile/' . $followingId);
         }
 
         // Check if already following
@@ -218,20 +246,25 @@ class UserController extends Controller
             $_SESSION['success'] = 'You are now following this user';
         }
 
-        $this->redirect('/profile?id=' . $followingId);
+        $this->redirect('/profile/' . $followingId);
     }
 
     /**
      * Unfollow user
      */
-    public function unfollow()
+    public function unfollow($followingId = null)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             die('Method not allowed');
         }
 
-        $followingId = intval($_POST['user_id'] ?? 0);
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/feed');
+        }
+
+        $followingId = intval($followingId ?? ($_POST['user_id'] ?? 0));
         $followerId = $this->auth->getUserId();
 
         $this->db->delete('followers', [
@@ -240,7 +273,145 @@ class UserController extends Controller
         ]);
 
         $_SESSION['success'] = 'You are no longer following this user';
-        $this->redirect('/profile?id=' . $followingId);
+        $this->redirect('/profile/' . $followingId);
+    }
+
+    public function sendInvite($receiverId = null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            if ($this->isAjaxRequest()) {
+                $this->json(['success' => false, 'error' => 'Method not allowed'], 405);
+            }
+            die('Method not allowed');
+        }
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            if ($this->isAjaxRequest()) {
+                $this->json(['success' => false, 'error' => 'Invalid CSRF token'], 403);
+            }
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/feed');
+        }
+
+        $senderId = $this->auth->getUserId();
+        $receiverId = intval($receiverId ?? ($_POST['user_id'] ?? 0));
+        if ($receiverId <= 0 || $receiverId === $senderId) {
+            if ($this->isAjaxRequest()) {
+                $this->json(['success' => false, 'error' => 'Invitation invalide'], 400);
+            }
+            $_SESSION['error'] = 'Invitation invalide';
+            $this->redirect('/feed');
+        }
+
+        $userModel = new User();
+        if ($userModel->isFollowing($senderId, $receiverId) && $userModel->isFollowing($receiverId, $senderId)) {
+            if ($this->isAjaxRequest()) {
+                $this->json(['success' => false, 'error' => 'Déjà connectés'], 400);
+            }
+            $_SESSION['error'] = 'Vous êtes déjà connectés';
+            $this->redirect('/profile/' . $receiverId);
+        }
+
+        $userModel->sendInvite($senderId, $receiverId);
+        $this->db->insert('notifications', [
+            'user_id' => $receiverId,
+            'from_user_id' => $senderId,
+            'type' => 'follow'
+        ]);
+
+        if ($this->isAjaxRequest()) {
+            $this->json(['success' => true, 'message' => 'Invitation envoyée']);
+        }
+
+        $_SESSION['success'] = 'Invitation envoyée';
+        $this->redirect('/profile/' . $receiverId);
+    }
+
+    public function acceptInvite($senderId = null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            if ($this->isAjaxRequest()) {
+                $this->json(['success' => false, 'error' => 'Method not allowed'], 405);
+            }
+            die('Method not allowed');
+        }
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            if ($this->isAjaxRequest()) {
+                $this->json(['success' => false, 'error' => 'Invalid CSRF token'], 403);
+            }
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/profile');
+        }
+
+        $receiverId = $this->auth->getUserId();
+        $senderId = intval($senderId ?? ($_POST['user_id'] ?? 0));
+        $userModel = new User();
+        $pending = $userModel->getPendingInviteFrom($senderId, $receiverId);
+        if (!$pending) {
+            if ($this->isAjaxRequest()) {
+                $this->json(['success' => false, 'error' => 'Invitation introuvable'], 404);
+            }
+            $_SESSION['error'] = 'Invitation introuvable';
+            $this->redirect('/profile');
+        }
+
+        $userModel->updateInviteStatus($senderId, $receiverId, 'accepted');
+        if (!$userModel->isFollowing($senderId, $receiverId)) {
+            $this->db->insert('followers', ['follower_id' => $senderId, 'following_id' => $receiverId]);
+        }
+        if (!$userModel->isFollowing($receiverId, $senderId)) {
+            $this->db->insert('followers', ['follower_id' => $receiverId, 'following_id' => $senderId]);
+        }
+
+        $this->db->insert('notifications', [
+            'user_id' => $senderId,
+            'from_user_id' => $receiverId,
+            'type' => 'follow'
+        ]);
+
+        if ($this->isAjaxRequest()) {
+            $this->json(['success' => true, 'message' => 'Invitation acceptée']);
+        }
+
+        $_SESSION['success'] = 'Invitation acceptée';
+        $this->redirect('/profile/' . $senderId);
+    }
+
+    public function declineInvite($senderId = null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            if ($this->isAjaxRequest()) {
+                $this->json(['success' => false, 'error' => 'Method not allowed'], 405);
+            }
+            die('Method not allowed');
+        }
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            if ($this->isAjaxRequest()) {
+                $this->json(['success' => false, 'error' => 'Invalid CSRF token'], 403);
+            }
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/profile');
+        }
+
+        $receiverId = $this->auth->getUserId();
+        $senderId = intval($senderId ?? ($_POST['user_id'] ?? 0));
+        $userModel = new User();
+        $userModel->updateInviteStatus($senderId, $receiverId, 'declined');
+
+        if ($this->isAjaxRequest()) {
+            $this->json(['success' => true, 'message' => 'Invitation refusée']);
+        }
+
+        $_SESSION['success'] = 'Invitation refusée';
+        $this->redirect('/profile');
+    }
+
+    private function isAjaxRequest()
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower((string) $_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
 }
 

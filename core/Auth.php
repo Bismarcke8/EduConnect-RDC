@@ -69,6 +69,7 @@ class Auth
         }
 
         // Set session
+        session_regenerate_id(true);
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['role'] = $user['role'];

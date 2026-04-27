@@ -24,7 +24,8 @@ class Database
                 ]
             );
         } catch (PDOException $e) {
-            die("Database connection failed: " . $e->getMessage());
+            $message = APP_DEBUG ? ("Database connection failed: " . $e->getMessage()) : "Database connection failed.";
+            die($message);
         }
     }
 
@@ -48,6 +49,14 @@ class Database
     }
 
     /**
+     * Get database server version
+     */
+    public function getServerVersion()
+    {
+        return (string) $this->pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+    }
+
+    /**
      * Execute a query
      */
     public function query($sql, $params = [])
@@ -57,7 +66,8 @@ class Database
             $stmt->execute($params);
             return $stmt;
         } catch (PDOException $e) {
-            die("Query error: " . $e->getMessage());
+            $message = APP_DEBUG ? ("Query error: " . $e->getMessage()) : "A database error occurred.";
+            die($message);
         }
     }
 

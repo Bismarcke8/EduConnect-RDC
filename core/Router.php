@@ -81,7 +81,7 @@ class Router
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         
         // Remove the public folder from the path
-        $basePath = '/EduConnect-RDC/public';
+        $basePath = APP_BASE_PATH;
         
         if (strpos($uri, $basePath) === 0) {
             $uri = substr($uri, strlen($basePath));

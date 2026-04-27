@@ -41,6 +41,11 @@ class AuthController extends Controller
             die('Method not allowed');
         }
 
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/auth/login');
+        }
+
         $email = Security::sanitize($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
@@ -83,6 +88,11 @@ class AuthController extends Controller
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             die('Method not allowed');
+        }
+
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/auth/register');
         }
 
         $email = Security::sanitize($_POST['email'] ?? '');

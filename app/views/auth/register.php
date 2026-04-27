@@ -7,6 +7,7 @@
         </div>
         <div class="card-body">
             <form method="POST" action="auth/register">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token ?? ($_SESSION['csrf_token'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="form-group">
                     <label for="first_name">Prénom</label>
                     <input type="text" id="first_name" name="first_name" placeholder="Jean" required>

@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
 });
 
+const APP_BASE_PATH = document.querySelector('meta[name="app-base-path"]')?.content || '';
+const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
 /**
  * Initialize application
  */
@@ -43,10 +46,10 @@ function handleLike(e) {
     e.preventDefault();
     const postId = this.dataset.postId;
     
-    fetch('/post/' + postId + '/like', {
+    fetch(APP_BASE_PATH + '/post/' + postId + '/like', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'post_id=' + postId
+        body: 'post_id=' + postId + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
     })
     .then(r => r.json())
     .then(data => {
@@ -140,7 +143,7 @@ function initializeNotifications() {
 function checkNotifications() {
     if (!document.querySelector('[data-user-id]')) return;
     
-    fetch('/api/notifications?unread_only=1')
+    fetch(APP_BASE_PATH + '/api/notifications?unread_only=1')
         .then(r => r.json())
         .then(data => {
             if (data.success && data.unread_count > 0) {
@@ -169,7 +172,8 @@ async function apiCall(url, method = 'GET', data = null) {
     const options = {
         method: method,
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': CSRF_TOKEN
         }
     };
     

@@ -109,14 +109,19 @@ class AdminController extends Controller
     /**
      * Ban user
      */
-    public function banUser()
+    public function banUser($userId = null)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             die('Method not allowed');
         }
 
-        $userId = intval($_POST['user_id'] ?? 0);
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/admin/users');
+        }
+
+        $userId = intval($userId ?? ($_POST['user_id'] ?? 0));
 
         if ($userId == $this->auth->getUserId()) {
             $_SESSION['error'] = 'You cannot ban yourself';
@@ -135,14 +140,19 @@ class AdminController extends Controller
     /**
      * Delete post
      */
-    public function deletePost()
+    public function deletePost($postId = null)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             die('Method not allowed');
         }
 
-        $postId = intval($_POST['post_id'] ?? 0);
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/admin/posts');
+        }
+
+        $postId = intval($postId ?? ($_POST['post_id'] ?? 0));
 
         $post = $this->db->fetch("SELECT id FROM posts WHERE id = ?", [$postId]);
 
@@ -199,6 +209,11 @@ class AdminController extends Controller
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             die('Method not allowed');
+        }
+
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/admin/dashboard');
         }
 
         $content = Security::sanitize($_POST['content'] ?? '');
@@ -285,7 +300,44 @@ class AdminController extends Controller
             'items_per_page' => ITEMS_PER_PAGE,
         ];
 
+        if (!empty($_SESSION['admin_settings']) && is_array($_SESSION['admin_settings'])) {
+            $saved = $_SESSION['admin_settings'];
+            $settings['site_name'] = $saved['site_name'] ?? $settings['site_name'];
+            $settings['site_description'] = $saved['site_description'] ?? $settings['site_description'];
+            $settings['allow_registration'] = isset($saved['allow_registration']) ? (bool) $saved['allow_registration'] : $settings['allow_registration'];
+            $settings['max_upload_size'] = isset($saved['max_upload_size']) ? ((int) $saved['max_upload_size'] * 1024 * 1024) : $settings['max_upload_size'];
+            $settings['items_per_page'] = $saved['items_per_page'] ?? $settings['items_per_page'];
+        }
+
         $this->view('admin/settings', ['settings' => $settings]);
+    }
+
+    /**
+     * Update admin settings (demo persistence via session)
+     */
+    public function updateSettings()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            die('Method not allowed');
+        }
+
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/admin/settings');
+        }
+
+        $_SESSION['admin_settings'] = [
+            'site_name' => Security::sanitize($_POST['site_name'] ?? APP_NAME),
+            'site_description' => Security::sanitize($_POST['site_description'] ?? ''),
+            'allow_registration' => isset($_POST['allow_registration']),
+            'max_upload_size' => max(1, min(50, intval($_POST['max_upload_size'] ?? 5))),
+            'items_per_page' => max(5, min(100, intval($_POST['items_per_page'] ?? ITEMS_PER_PAGE))),
+        ];
+
+        $this->logAdminAction('update_settings', 'settings', 0, 'System settings updated');
+        $_SESSION['success'] = 'Paramètres enregistrés avec succès';
+        $this->redirect('/admin/settings');
     }
 
     /**

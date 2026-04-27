@@ -1,6 +1,6 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
-<div class="container-xl">
+<div class="container-xl ec-feed-page">
     <div class="grid-3" style="gap: var(--spacing-lg);">
         <!-- Sidebar Left -->
         <aside style="grid-column: 1;">
@@ -25,9 +25,12 @@
 
         <!-- Main Feed -->
         <div style="grid-column: 2;">
-            <div class="card">
+            <div class="card ec-composer-card">
                 <div class="card-body">
-                    <a href="post/create" class="btn btn-primary btn-block">✍️ Créer une publication</a>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">Exprime-toi</h5>
+                        <a href="post/create" class="btn btn-primary">✍️ Créer une publication</a>
+                    </div>
                 </div>
             </div>
 
@@ -39,7 +42,7 @@
                 </div>
             <?php else: ?>
                 <?php foreach ($posts as $post): ?>
-                    <div class="card">
+                    <article class="card ec-post-card">
                         <div class="card-header">
                             <div class="d-flex align-items-center" style="gap: var(--spacing-md); flex: 1;">
                                 <img src="<?php echo $post['profile_photo'] ? '/' . $post['profile_photo'] : '/EduConnect-RDC/public/assets/images/default-avatar.png'; ?>" 
@@ -72,17 +75,23 @@
                         </div>
 
                         <div class="card-footer">
-                            <div class="d-flex" style="gap: var(--spacing-md);">
-                                <button class="btn-like-post" data-post-id="<?php echo $post['id']; ?>" style="border: none; background: none; cursor: pointer; color: var(--color-text-secondary);">
-                                    <?php echo $post['liked_by_user'] ? '❤️' : '🤍'; ?> 
-                                    <span><?php echo $post['likes_count']; ?></span>
+                            <div class="ec-post-meta d-flex justify-content-between mb-sm">
+                                <span>❤️ <?php echo (int) $post['likes_count']; ?> mentions J'aime</span>
+                                <span>💬 <?php echo (int) $post['comments_count']; ?> commentaires</span>
+                            </div>
+                            <div class="ec-post-actions">
+                                <button class="btn-like-post ec-action-btn" data-post-id="<?php echo $post['id']; ?>">
+                                    <?php echo $post['liked_by_user'] ? '❤️ J’aime' : '🤍 J’aime'; ?>
                                 </button>
-                                <button onclick="document.location='/post/<?php echo $post['id']; ?>#comments'" style="border: none; background: none; cursor: pointer; color: var(--color-text-secondary);">
-                                    💬 <span><?php echo $post['comments_count']; ?></span>
+                                <button onclick="document.location='post/<?php echo $post['id']; ?>#comments'" class="ec-action-btn">
+                                    💬 Commenter
+                                </button>
+                                <button type="button" class="ec-action-btn" onclick="navigator.clipboard.writeText(window.location.origin + '<?php echo APP_BASE_PATH; ?>/post/<?php echo $post['id']; ?>')">
+                                    ↗️ Partager
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </article>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
@@ -92,6 +101,7 @@
             <div class="card">
                 <h3 style="margin-bottom: var(--spacing-md);">🔍 Rechercher</h3>
                 <form action="search" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                     <input type="text" name="query" placeholder="Chercher un étudiant..." required style="margin-bottom: var(--spacing-md);">
                     <button type="submit" class="btn btn-primary btn-block">Rechercher</button>
                 </form>
@@ -120,20 +130,21 @@ document.querySelectorAll('.btn-like-post').forEach(btn => {
     btn.addEventListener('click', function(e) {
         e.preventDefault();
         const postId = this.dataset.postId;
+        const basePath = document.querySelector('meta[name="app-base-path"]')?.content || '';
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
         
-        fetch('/post/' + postId + '/like', {
+        fetch(basePath + '/post/' + postId + '/like', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: 'post_id=' + postId
+            body: 'post_id=' + postId + '&csrf_token=' + encodeURIComponent(csrfToken)
         })
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                const icon = this.querySelector('span').parentElement;
                 if (data.liked) {
-                    this.innerHTML = '❤️ <span>' + data.likes_count + '</span>';
+                    this.innerHTML = '❤️ J’aime';
                 } else {
-                    this.innerHTML = '🤍 <span>' + data.likes_count + '</span>';
+                    this.innerHTML = '🤍 J’aime';
                 }
             }
         });

@@ -77,11 +77,12 @@ class Security
      */
     public static function validateFileUpload($file)
     {
-        if (!isset($file['tmp_name']) || !isset($file['type'])) {
+        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
             return ['valid' => false, 'error' => 'Invalid file upload'];
         }
 
-        if (!in_array($file['type'], ALLOWED_FILE_TYPES)) {
+        $detectedType = mime_content_type($file['tmp_name']) ?: '';
+        if (!in_array($detectedType, ALLOWED_FILE_TYPES, true)) {
             return ['valid' => false, 'error' => 'File type not allowed'];
         }
 

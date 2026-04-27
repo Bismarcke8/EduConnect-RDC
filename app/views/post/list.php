@@ -1,8 +1,8 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?>
 
-<div class="container" style="max-width: 700px;">
+<div class="container" style="max-width: 760px;">
     <div class="d-flex align-items-center justify-content-between mb-lg">
-        <h2>Publications</h2>
+        <h2>Fil public</h2>
         <a href="post/create" class="btn btn-primary">✍️ Créer</a>
     </div>
 
@@ -14,14 +14,14 @@
         </div>
     <?php else: ?>
         <?php foreach ($posts as $post): ?>
-            <div class="card">
+            <article class="card ec-post-card">
                 <div class="card-header">
                     <div class="d-flex align-items-center" style="gap: var(--spacing-md); flex: 1;">
                         <img src="<?php echo $post['profile_photo'] ? '/' . $post['profile_photo'] : '/EduConnect-RDC/public/assets/images/default-avatar.png'; ?>" 
                              alt="<?php echo htmlspecialchars($post['first_name']); ?>" 
                              class="avatar">
                         <div>
-                            <a href="profile?id=<?php echo $post['user_id']; ?>" style="color: var(--color-text); text-decoration: none; font-weight: 500;">
+                            <a href="profile/<?php echo $post['user_id']; ?>" style="color: var(--color-text); text-decoration: none; font-weight: 500;">
                                 <?php echo htmlspecialchars($post['first_name'] . ' ' . $post['last_name']); ?>
                             </a>
                             <p style="font-size: 0.85rem; color: var(--color-text-secondary);">
@@ -46,10 +46,12 @@
                 </div>
 
                 <div class="card-footer">
-                    <span style="color: var(--color-text-secondary);">❤️ <?php echo $post['likes_count']; ?></span>
-                    <span style="color: var(--color-text-secondary);">💬 <?php echo $post['comments_count']; ?></span>
+                    <div class="ec-post-meta d-flex justify-content-between">
+                        <span>❤️ <?php echo (int) $post['likes_count']; ?> mentions J'aime</span>
+                        <span>💬 <?php echo (int) $post['comments_count']; ?> commentaires</span>
+                    </div>
                 </div>
-            </div>
+            </article>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>

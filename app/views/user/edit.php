@@ -67,6 +67,7 @@
 
             <h3>Photo de profil</h3>
             <form id="photo-form" enctype="multipart/form-data">
+                <input type="hidden" id="photo-csrf-token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="form-group">
                     <input type="file" id="photo-input" name="photo" accept="image/*" required>
                     <small style="color: var(--color-text-secondary);">Taille maximale: 5MB</small>
@@ -83,8 +84,10 @@ document.getElementById('photo-form').addEventListener('submit', function(e) {
     
     const formData = new FormData();
     formData.append('photo', document.getElementById('photo-input').files[0]);
+    formData.append('csrf_token', document.getElementById('photo-csrf-token').value || '');
+    const basePath = document.querySelector('meta[name="app-base-path"]')?.content || '';
     
-    fetch('/user/upload-photo', {
+    fetch(basePath + '/user/upload-photo', {
         method: 'POST',
         body: formData
     })

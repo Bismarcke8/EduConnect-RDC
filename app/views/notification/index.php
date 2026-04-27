@@ -43,6 +43,7 @@
                         </div>
                         <?php if (!$notif['is_read']): ?>
                             <form method="POST" action="notification/<?php echo $notif['id']; ?>/read" style="display: inline;">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                                 <button type="submit" class="btn btn-primary btn-sm">Marquer comme lue</button>
                             </form>
                         <?php endif; ?>

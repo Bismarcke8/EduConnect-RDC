@@ -36,6 +36,7 @@
                                 <span style="color: var(--color-text-secondary);">Banni</span>
                             <?php else: ?>
                                 <form method="POST" action="admin/user/<?php echo $user['id']; ?>/ban" style="display: inline;">
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr?')">
                                         Bannir
                                     </button>

@@ -24,6 +24,7 @@ $router->get('/auth/logout', 'AuthController@logout');
 
 // User Routes
 $router->get('/profile/:id', 'UserController@profile');
+$router->get('/user/invitations', 'UserController@invitations');
 $router->get('/user/settings', 'UserController@settings');
 $router->post('/user/update-profile', 'UserController@updateProfile');
 $router->post('/user/change-password', 'UserController@changePassword');
@@ -52,6 +53,9 @@ $router->post('/search', 'SearchController@search');
 // Follow Routes
 $router->post('/user/:id/follow', 'UserController@follow');
 $router->post('/user/:id/unfollow', 'UserController@unfollow');
+$router->post('/user/:id/invite', 'UserController@sendInvite');
+$router->post('/user/:id/invite/accept', 'UserController@acceptInvite');
+$router->post('/user/:id/invite/decline', 'UserController@declineInvite');
 
 // Notifications Routes
 $router->get('/notifications', 'NotificationController@index');
@@ -70,6 +74,7 @@ $router->post('/admin/create-post', 'AdminController@createPost');
 $router->get('/admin/logs', 'AdminController@logs');
 $router->get('/admin/stats', 'AdminController@stats');
 $router->get('/admin/settings', 'AdminController@settings');
+$router->post('/admin/update-settings', 'AdminController@updateSettings');
 
 // ==========================================
 // API ROUTES (AJAX)

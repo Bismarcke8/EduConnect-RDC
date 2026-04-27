@@ -84,6 +84,11 @@ class MessageController extends Controller
             die('Method not allowed');
         }
 
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = 'Requête invalide (CSRF)';
+            $this->redirect('/messages');
+        }
+
         $this->requireAuth();
 
         $recipientId = intval($_POST['recipient_id'] ?? 0);
@@ -135,6 +140,10 @@ class MessageController extends Controller
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             $this->json(['success' => false, 'error' => 'Method not allowed'], 405);
+        }
+
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $this->json(['success' => false, 'error' => 'Invalid CSRF token'], 403);
         }
 
         $this->requireAuth();

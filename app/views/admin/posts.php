@@ -33,6 +33,7 @@
                         </td>
                         <td style="padding: var(--spacing-md); text-align: right;">
                             <form method="POST" action="admin/post/<?php echo $post['id']; ?>/delete" style="display: inline;">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr?')">
                                     Supprimer
                                 </button>

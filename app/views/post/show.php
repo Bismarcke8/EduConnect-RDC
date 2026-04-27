@@ -8,7 +8,7 @@
                      alt="<?php echo htmlspecialchars($post['first_name']); ?>" 
                      class="avatar">
                 <div>
-                    <a href="profile?id=<?php echo $post['user_id']; ?>" style="color: var(--color-text); text-decoration: none; font-weight: 500;">
+                    <a href="profile/<?php echo $post['user_id']; ?>" style="color: var(--color-text); text-decoration: none; font-weight: 500;">
                         <?php echo htmlspecialchars($post['first_name'] . ' ' . $post['last_name']); ?>
                     </a>
                     <p style="font-size: 0.85rem; color: var(--color-text-secondary);">
@@ -50,6 +50,7 @@
         <?php if (isset($_SESSION['user_id'])): ?>
             <div class="card mb-lg">
                 <form method="POST" action="post/<?php echo $post['id']; ?>/comment" class="card-body">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token ?? ($_SESSION['csrf_token'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                     <textarea name="content" placeholder="Écrire un commentaire..." required style="margin-bottom: var(--spacing-md);"></textarea>
                     <button type="submit" class="btn btn-primary">Commenter</button>
                 </form>
@@ -87,7 +88,7 @@
                                  alt="<?php echo htmlspecialchars($comment['first_name']); ?>" 
                                  class="avatar-sm">
                             <div>
-                                <a href="profile?id=<?php echo $comment['user_id']; ?>" style="color: var(--color-text); text-decoration: none; font-weight: 500;">
+                                <a href="profile/<?php echo $comment['user_id']; ?>" style="color: var(--color-text); text-decoration: none; font-weight: 500;">
                                     <?php echo htmlspecialchars($comment['first_name'] . ' ' . $comment['last_name']); ?>
                                 </a>
                                 <p style="font-size: 0.85rem; color: var(--color-text-secondary);">
@@ -112,10 +113,13 @@ document.querySelector('.btn-like').addEventListener('click', function(e) {
     e.preventDefault();
     const postId = this.dataset.postId;
     
-    fetch('/post/' + postId + '/like', {
+    const basePath = document.querySelector('meta[name="app-base-path"]')?.content || '';
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+    fetch(basePath + '/post/' + postId + '/like', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'post_id=' + postId
+        body: 'post_id=' + postId + '&csrf_token=' + encodeURIComponent(csrfToken)
     })
     .then(r => r.json())
     .then(data => {

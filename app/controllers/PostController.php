@@ -249,7 +249,7 @@ class PostController extends Controller
     /**
      * Like post
      */
-    public function like()
+    public function like($postId = null)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
@@ -258,7 +258,11 @@ class PostController extends Controller
 
         $this->requireAuth();
 
-        $postId = intval($_POST['post_id'] ?? 0);
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $this->json(['success' => false, 'error' => 'Invalid CSRF token'], 403);
+        }
+
+        $postId = intval($postId ?? ($_POST['post_id'] ?? 0));
         $userId = $this->auth->getUserId();
 
         $postModel = new Post();
@@ -305,6 +309,10 @@ class PostController extends Controller
         }
 
         $this->requireAuth();
+
+        if (!Security::verifyToken($_POST['csrf_token'] ?? '')) {
+            $this->json(['success' => false, 'error' => 'Invalid CSRF token'], 403);
+        }
 
         $postId = intval($postId ?? 0);
         $content = Security::sanitize($_POST['content'] ?? '');

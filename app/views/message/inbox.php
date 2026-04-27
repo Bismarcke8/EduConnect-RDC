@@ -45,11 +45,19 @@
 
     <!-- Main Chat Area -->
     <div class="messages-main">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <h4>Boite de reception</h4>
+                <p><?php echo count($conversations); ?> conversation(s)</p>
+            </div>
+        </div>
+
         <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary);">
-            <div style="text-align: center;">
+            <div style="text-align: center; max-width: 420px;">
                 <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">💬</div>
-                <h3>Sélectionnez une conversation</h3>
-                <p>Choisissez une conversation dans la liste pour commencer à discuter</p>
+                <h3 class="mb-2">Selectionnez une conversation</h3>
+                <p class="mb-3">Choisissez un contact dans la liste de gauche pour afficher les messages.</p>
+                <a href="search" class="btn btn-primary">Trouver des etudiants</a>
             </div>
         </div>
     </div>

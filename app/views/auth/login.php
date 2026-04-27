@@ -7,6 +7,7 @@
         </div>
         <div class="card-body">
             <form method="POST" action="auth/login">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token ?? ($_SESSION['csrf_token'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" placeholder="votre@email.com" required>
@@ -18,6 +19,13 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block">Connexion</button>
+            </form>
+
+            <form method="POST" action="auth/login" style="margin-top: var(--spacing-md);">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token ?? ($_SESSION['csrf_token'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
+                <input type="hidden" name="email" value="admin@educonnect.rdc">
+                <input type="hidden" name="password" value="admin123">
+                <button type="submit" class="btn btn-secondary btn-block">Se connecter en tant qu'admin</button>
             </form>
 
             <p style="margin-top: var(--spacing-lg); text-align: center; color: var(--color-text-secondary);">

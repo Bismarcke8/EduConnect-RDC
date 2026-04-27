@@ -10,6 +10,7 @@ define('DB_PASS', '');
 define('APP_NAME', 'EduConnect-RDC');
 define('APP_URL', 'http://localhost/EduConnect-RDC');
 define('APP_DEBUG', true);
+define('APP_BASE_PATH', rtrim((string) (parse_url(APP_URL, PHP_URL_PATH) ?? ''), '/') . '/public');
 
 // Timezone
 date_default_timezone_set('Africa/Kinshasa');

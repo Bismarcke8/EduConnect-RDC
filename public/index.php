@@ -12,6 +12,7 @@ ini_set('session.gc_maxlifetime', 86400 * 7); // 7 days
 ini_set('session.cookie_lifetime', 864000 * 7);
 ini_set('session.cookie_httponly', 1);
 ini_set('session.cookie_samesite', 'Strict');
+ini_set('session.cookie_secure', (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? '1' : '0');
 
 // Start session
 if (session_status() === PHP_SESSION_NONE) {

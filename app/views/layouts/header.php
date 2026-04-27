@@ -3,36 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <base href="/EduConnect-RDC/public/">
+    <base href="<?php echo APP_BASE_PATH; ?>/">
+    <meta name="app-base-path" content="<?php echo APP_BASE_PATH; ?>">
+    <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
     <title><?php echo APP_NAME; ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header>
+    <?php
+    $pendingInvitesCount = 0;
+    if (isset($_SESSION['user_id'])) {
+        try {
+            $inviteUserModel = new \App\Models\User();
+            $pendingInvitesCount = $inviteUserModel->countIncomingPendingInvites((int) $_SESSION['user_id']);
+        } catch (\Throwable $e) {
+            $pendingInvitesCount = 0;
+        }
+    }
+    ?>
+    <header class="ec-topbar">
         <div class="container">
-            <nav class="navbar">
-                <a href="./" class="navbar-brand">🎓 EduConnect-RDC</a>
-                <ul class="navbar-nav">
+            <nav class="ec-nav">
+                <div class="ec-nav-left">
+                    <a href="./" class="ec-logo">e</a>
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <li><a href="feed">Feed</a></li>
-                        <li><a href="posts">Publications</a></li>
-                        <li><a href="search">Rechercher</a></li>
-                        <li><a href="messages" style="position: relative;">
-                            Messages
-                            <?php if (isset($unreadMessages) && $unreadMessages > 0): ?>
-                                <span style="position: absolute; top: -5px; right: -10px; background: #e74c3c; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">
-                                    <?php echo $unreadMessages; ?>
-                                </span>
-                            <?php endif; ?>
-                        </a></li>
-                        <li><a href="notifications">Notifications</a></li>
-                        <li><a href="profile/<?php echo $_SESSION['user_id']; ?>">Profil</a></li>
-                        <li><a href="auth/logout">Déconnexion</a></li>
-                    <?php else: ?>
-                        <li><a href="auth/login">Connexion</a></li>
-                        <li><a href="auth/register" class="btn btn-primary btn-sm">S'inscrire</a></li>
+                        <form action="search" method="POST" class="ec-search-form">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                            <input type="text" name="query" class="ec-search-input" placeholder="Rechercher sur EduConnect..." required>
+                        </form>
                     <?php endif; ?>
-                </ul>
+                </div>
+
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <ul class="ec-nav-center">
+                        <li><a href="feed" class="ec-nav-link">Accueil</a></li>
+                        <li><a href="posts" class="ec-nav-link">Publications</a></li>
+                        <li><a href="messages" class="ec-nav-link">Messages</a></li>
+                        <li>
+                            <a href="user/invitations" class="ec-nav-link ec-nav-link-with-badge">
+                                Invitations
+                                <?php if ($pendingInvitesCount > 0): ?>
+                                    <span class="ec-nav-badge"><?php echo (int) $pendingInvitesCount; ?></span>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+                        <li><a href="notifications" class="ec-nav-link">Notifications</a></li>
+                    </ul>
+
+                    <div class="ec-nav-right">
+                        <a href="profile/<?php echo $_SESSION['user_id']; ?>" class="btn btn-secondary btn-sm">Profil</a>
+                        <a href="auth/logout" class="btn btn-danger btn-sm">Déconnexion</a>
+                    </div>
+                <?php else: ?>
+                    <div class="ec-nav-right">
+                        <a href="auth/login" class="btn btn-secondary btn-sm">Connexion</a>
+                        <a href="auth/register" class="btn btn-primary btn-sm">S'inscrire</a>
+                    </div>
+                <?php endif; ?>
             </nav>
         </div>
     </header>

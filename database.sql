@@ -184,4 +184,4 @@ CREATE TABLE admin_logs (
 
 -- Insert sample admin user (password: admin123 - change it!)
 INSERT INTO users (email, password, first_name, last_name, role) VALUES 
-('admin@educonnect.rdc', '$2y$10$NWqHlMXvF5PO8dZjqK5S.OvKN0X8R5L3P8N7M6K5J4I3H2G1F0E9D', 'Admin', 'EduConnect', 'admin');
+('admin@educonnect.rdc', '$2y$10$4HRwJhl4zVN7Dn0nfd1ifekykeLIAGHyfpu8pKPfgaXZvgm62Qr3C', 'Admin', 'EduConnect', 'admin');

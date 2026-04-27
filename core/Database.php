@@ -154,16 +154,21 @@ class Database
     /**
      * Count records
      */
-    public function count($table, $where = [])
+    public function count($table, $where = [], $params = [])
     {
         $sql = "SELECT COUNT(*) as count FROM $table";
         
         if (!empty($where)) {
-            $whereClause = implode(' AND ', array_map(function($key) {
-                return "$key = ?";
-            }, array_keys($where)));
-            $sql .= " WHERE " . $whereClause;
-            $result = $this->fetch($sql, array_values($where));
+            if (is_array($where)) {
+                $whereClause = implode(' AND ', array_map(function($key) {
+                    return "$key = ?";
+                }, array_keys($where)));
+                $sql .= " WHERE " . $whereClause;
+                $result = $this->fetch($sql, array_values($where));
+            } else {
+                $sql .= " WHERE " . $where;
+                $result = $this->fetch($sql, $params);
+            }
         } else {
             $result = $this->fetch($sql);
         }

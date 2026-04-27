@@ -60,7 +60,11 @@ class AuthController extends Controller
 
         if ($result['success']) {
             $_SESSION['success'] = 'Welcome back!';
-            $this->redirect('/feed');
+            if ($this->auth->isAdmin()) {
+                $this->redirect('/admin/dashboard');
+            } else {
+                $this->redirect('/feed');
+            }
         } else {
             $_SESSION['error'] = $result['error'];
             $this->redirect('/auth/login');

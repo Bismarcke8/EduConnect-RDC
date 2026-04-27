@@ -119,7 +119,7 @@ chmod 755 public/uploads/
 
 ### 6. Accès à l'Application
 - URL : `http://localhost/EduConnect-RDC/public/`
-- Compte admin par défaut : `admin@educonnect-rdc.cd `/`admin123`
+- Compte admin par défaut : `admin@educonnect.rdc` / `admin123`
 
 ## 📖 Utilisation
 
